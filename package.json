@@ -2,7 +2,7 @@
   "name": "eslint-plugin-typescript-heck",
   "version": "0.0.1",
   "description": "Some extended eslint rules for typescript",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "build": "npm run build:types && npm run build:js",
     "build:types": "tsc --emitDeclarationOnly",
