@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-typescript-heck",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Some extended eslint rules for typescript",
   "main": "dist/index.js",
   "scripts": {
