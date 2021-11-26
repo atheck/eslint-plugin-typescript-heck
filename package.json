@@ -1,0 +1,39 @@
+{
+  "name": "eslint-plugin-typescript-heck",
+  "version": "0.0.1",
+  "description": "Some extended eslint rules for typescript",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "npm run build:types && npm run build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel src --out-dir dist --extensions \".ts,.tsx\" --source-maps inline",
+    "test": "jest"
+  },
+  "author": "atheck",
+  "license": "MIT",
+  "dependencies": {
+    "@types/eslint": "8.2.0",
+    "@typescript-eslint/eslint-plugin": "5.4.0",
+    "@typescript-eslint/experimental-utils": "5.4.0",
+    "@typescript-eslint/parser": "5.4.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.16.0",
+    "@babel/core": "7.16.0",
+    "@babel/preset-env": "7.16.4",
+    "@babel/preset-typescript": "7.16.0",
+    "@types/jest": "27.0.3",
+    "eslint": "8.3.0",
+    "eslint-config-heck": "0.1.4",
+    "jest": "27.3.1",
+    "ts-jest": "27.0.7",
+    "ts-node": "10.4.0",
+    "typescript": "4.5.2"
+  },
+  "keywords": [
+    "eslint",
+    "typescript",
+    "array",
+    "space"
+  ]
+}

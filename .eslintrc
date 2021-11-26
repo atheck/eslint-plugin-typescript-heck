@@ -1,0 +1,7 @@
+{
+    "extends": "heck/node",
+    "rules": {
+        "jest/require-hook": "off",
+        "unicorn/filename-case": "off"
+    }
+}
