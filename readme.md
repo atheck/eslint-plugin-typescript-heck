@@ -27,7 +27,7 @@ This rule takes one option:
 
 **never:**
 
-&#xE126; Examples of **incorrect** code for this rule:
+👎 Examples of **incorrect** code for this rule:
 
 ~~~ts
 const myVar: string [] = [];
@@ -36,7 +36,7 @@ function myFunc (parameter: number []) {
 }
 ~~~
 
-&#xE125; Examples of **correct** code for this rule:
+👍 Examples of **correct** code for this rule:
 
 ~~~ts
 const myVar: string[] = [];
@@ -47,7 +47,7 @@ function myFunc (parameter: number[]) {
 
 **always:**
 
-&#xE126; Examples of **incorrect** code for this rule:
+👎 Examples of **incorrect** code for this rule:
 
 ~~~ts
 const myVar: string[] = [];
@@ -56,7 +56,7 @@ function myFunc (parameter: number[]) {
 }
 ~~~
 
-&#xE125; Examples of **correct** code for this rule:
+👍 Examples of **correct** code for this rule:
 
 ~~~ts
 const myVar: string [] = [];
