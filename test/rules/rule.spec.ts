@@ -8,12 +8,49 @@ const ruleTester = new ESLintUtils.RuleTester({
 ruleTester.run(ruleName, arrayTypeSpacing, {
     valid: [
         "const array: string [];",
+        "const array: { prop: string } [];",
         "function test (array: string []) {}",
         "type SomeType<T extends string []> = {};",
     ],
     invalid: [
         {
             code: "const array: string[];",
+            errors: [
+                {
+                    messageId: "missingSpace",
+                    type: AST_NODE_TYPES.TSArrayType,
+                },
+            ],
+        },
+        {
+            code: "const array: number[ ];",
+            errors: [
+                {
+                    messageId: "missingSpace",
+                    type: AST_NODE_TYPES.TSArrayType,
+                },
+            ],
+        },
+        {
+            code: "const array: number  [];",
+            errors: [
+                {
+                    messageId: "missingSpace",
+                    type: AST_NODE_TYPES.TSArrayType,
+                },
+            ],
+        },
+        {
+            code: "const array: Date [ ];",
+            errors: [
+                {
+                    messageId: "missingSpace",
+                    type: AST_NODE_TYPES.TSArrayType,
+                },
+            ],
+        },
+        {
+            code: "const array: { prop: string }[];",
             errors: [
                 {
                     messageId: "missingSpace",
@@ -31,7 +68,7 @@ ruleTester.run(ruleName, arrayTypeSpacing, {
             ],
         },
         {
-            code: "type SomeType<T extends string[]> = {};",
+            code: "type SomeType<T extends boolean[]> = {};",
             errors: [
                 {
                     messageId: "missingSpace",

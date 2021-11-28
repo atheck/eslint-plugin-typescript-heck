@@ -24,7 +24,9 @@ const arrayTypeSpacing = createRule({
         return {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             TSArrayType (node: TSESTree.TSArrayType): void {
-                if (node.range[1] - node.elementType.range[1] < 3) {
+                const code = context.getSourceCode().getText(node);
+
+                if (!(/[^\s] \[\]$/u).test(code)) {
                     context.report({
                         messageId: "missingSpace",
                         node,
