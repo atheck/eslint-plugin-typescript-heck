@@ -33,7 +33,6 @@
   "keywords": [
     "eslint",
     "typescript",
-    "array",
-    "space"
+    "rules"
   ]
 }
