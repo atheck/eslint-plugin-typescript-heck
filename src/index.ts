@@ -1,5 +1,5 @@
-import { typescriptArraySpacing } from "./rules/typescript-array-spacing";
+import { rules } from "./rules";
 
 export {
-    typescriptArraySpacing,
+    rules,
 };

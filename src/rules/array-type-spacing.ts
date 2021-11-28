@@ -1,11 +1,13 @@
 import { ESLintUtils, TSESTree } from "@typescript-eslint/experimental-utils";
 import { RuleContext, RuleListener } from "@typescript-eslint/experimental-utils/dist/ts-eslint";
 
+export const ruleName = "array-type-spacing";
+
 // eslint-disable-next-line new-cap
 const createRule = ESLintUtils.RuleCreator(name => `https://github.com/atheck/eslint-plugin-typescript-heck#${name}`);
 
-const typescriptArraySpacing = createRule({
-    name: "typescript-array-spacing",
+const arrayTypeSpacing = createRule({
+    name: ruleName,
     meta: {
         type: "layout",
         fixable: "whitespace",
@@ -34,4 +36,4 @@ const typescriptArraySpacing = createRule({
     defaultOptions: [],
 });
 
-export { typescriptArraySpacing };
+export { arrayTypeSpacing };

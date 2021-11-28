@@ -1,11 +1,11 @@
+import { arrayTypeSpacing, ruleName } from "../../src/rules/array-type-spacing";
 import { AST_NODE_TYPES, ESLintUtils } from "@typescript-eslint/experimental-utils";
-import { typescriptArraySpacing } from "../../src/rules/typescript-array-spacing";
 
 const ruleTester = new ESLintUtils.RuleTester({
     parser: "@typescript-eslint/parser",
 });
 
-ruleTester.run("my-rule", typescriptArraySpacing, {
+ruleTester.run(ruleName, arrayTypeSpacing, {
     valid: [
         "const array: string [];",
         "function test (array: string []) {}",

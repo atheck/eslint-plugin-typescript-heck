@@ -6,9 +6,9 @@ This package includes extended eslint rules for usage with Typescript.
 
 | Name | Description |
 | ---  | ---         |
-| `typescript-array-spacing` | Enforces one space between type name and square brackets. |
+| `array-type-spacing` | Enforces one space between type name and square brackets. |
 
-### typescript-array-spacing
+### array-type-spacing
 
 This rule enforces one space between type name and square brackets.
 
