@@ -10,7 +10,9 @@ This package includes extended eslint rules for usage with Typescript.
 
 ### array-type-spacing
 
-This rule enforces correct spacing between type name and square brackets of array types.
+This rule enforces correct spacing between type name and square brackets of array types. It also enforces no spaces between the square brackets.
+
+🔧 The `--fix` option on the command line can automatically fix the problems reported by this rule.
 
 #### Options
 
@@ -25,7 +27,7 @@ This rule takes one option:
 
 **never:**
 
-Examples of **incorrect** code for this rule:
+&#xE126; Examples of **incorrect** code for this rule:
 
 ~~~ts
 const myVar: string [] = [];
@@ -34,7 +36,7 @@ function myFunc (parameter: number []) {
 }
 ~~~
 
-Examples of **correct** code for this rule:
+&#xE125; Examples of **correct** code for this rule:
 
 ~~~ts
 const myVar: string[] = [];
@@ -45,7 +47,7 @@ function myFunc (parameter: number[]) {
 
 **always:**
 
-Examples of **incorrect** code for this rule:
+&#xE126; Examples of **incorrect** code for this rule:
 
 ~~~ts
 const myVar: string[] = [];
@@ -54,7 +56,7 @@ function myFunc (parameter: number[]) {
 }
 ~~~
 
-Examples of **correct** code for this rule:
+&#xE125; Examples of **correct** code for this rule:
 
 ~~~ts
 const myVar: string [] = [];
