@@ -1,80 +1,116 @@
-import { arrayTypeSpacing, MessageIds, Options, ruleName } from "../../src/rules/array-type-spacing";
+import { arrayTypeSpacing, ruleName } from "../../src/rules/array-type-spacing";
 import { AST_NODE_TYPES, ESLintUtils } from "@typescript-eslint/experimental-utils";
-import { InvalidTestCase, ValidTestCase } from "@typescript-eslint/experimental-utils/dist/ts-eslint";
 
 const ruleTester = new ESLintUtils.RuleTester({
     parser: "@typescript-eslint/parser",
 });
 
-const codes: [string, Options] [] = [
-    ["const array: string [];", ["always"]],
-    ["const array: { prop: string } [];", ["always"]],
-    ["function test (array: string []) {}", ["always"]],
-    ["type SomeType<T extends string []> = {};", ["always"]],
-    ["const array: string[];", ["never"]],
-    ["const array: { prop: string }[];", ["never"]],
-    ["function test (array: string[]) {}", ["never"]],
-    ["type SomeType<T extends boolean[]> = {};", ["never"]],
-];
-const alwaysInvalid = [
-    "const array: number[ ];",
-    "const array: number  [];",
-    "const array: Date [ ];",
-];
+const correctForNever = "const array: string[];";
+const correctForAlways = "const array: string [];";
 
-const validCases = codes.map(([code, options]): ValidTestCase<Options> => ({
-    options,
-    code,
-}));
-const invalidCases = codes.map(([code, options]): InvalidTestCase<MessageIds, Options> => {
-    if (options[0] === "always") {
-        return {
+ruleTester.run(`${ruleName} with 'never'`, arrayTypeSpacing, {
+    valid: [
+        {
             options: ["never"],
-            code,
+            code: "const array: string[];",
+        },
+    ],
+    invalid: [
+        {
+            options: ["never"],
+            code: "const array: string [];",
             errors: [
                 {
-                    messageId: "removeSpace",
+                    messageId: "noSpace",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
             ],
-        };
-    }
-
-    return {
-        options: ["always"],
-        code,
-        errors: [
-            {
-                messageId: "addSpace",
-                type: AST_NODE_TYPES.TSArrayType,
-            },
-        ],
-    };
+            output: correctForNever,
+        },
+        {
+            options: ["never"],
+            code: "const array: string[ ];",
+            errors: [
+                {
+                    messageId: "noSpaceBetween",
+                    type: AST_NODE_TYPES.TSArrayType,
+                },
+            ],
+            output: correctForNever,
+        },
+        {
+            options: ["never"],
+            code: "const array: string [ ];",
+            errors: [
+                {
+                    messageId: "noSpace",
+                    type: AST_NODE_TYPES.TSArrayType,
+                },
+                {
+                    messageId: "noSpaceBetween",
+                    type: AST_NODE_TYPES.TSArrayType,
+                },
+            ],
+            output: correctForNever,
+        },
+    ],
 });
-const alwaysInvalidCases = alwaysInvalid.flatMap((code): InvalidTestCase<MessageIds, Options> [] => [
-    {
-        code,
-        options: ["always"],
-        errors: [
-            {
-                messageId: "addSpace",
-                type: AST_NODE_TYPES.TSArrayType,
-            },
-        ],
-    },
-    {
-        code,
-        options: ["never"],
-        errors: [
-            {
-                messageId: "removeSpace",
-                type: AST_NODE_TYPES.TSArrayType,
-            },
-        ],
-    },
-]);
 
-ruleTester.run(ruleName, arrayTypeSpacing, {
-    valid: validCases,
-    invalid: [...invalidCases, ...alwaysInvalidCases],
+ruleTester.run(`${ruleName} with 'always'`, arrayTypeSpacing, {
+    valid: [
+        {
+            options: ["always"],
+            code: "const array: string [];",
+        },
+    ],
+    invalid: [
+        {
+            options: ["always"],
+            code: "const array: string[];",
+            errors: [
+                {
+                    messageId: "oneSpace",
+                    type: AST_NODE_TYPES.TSArrayType,
+                },
+            ],
+            output: correctForAlways,
+        },
+        {
+            options: ["always"],
+            code: "const array: string[ ];",
+            errors: [
+                {
+                    messageId: "oneSpace",
+                    type: AST_NODE_TYPES.TSArrayType,
+                },
+                {
+                    messageId: "noSpaceBetween",
+                    type: AST_NODE_TYPES.TSArrayType,
+                },
+            ],
+            output: correctForAlways,
+        },
+        {
+            options: ["always"],
+            code: "const array: string [ ];",
+            errors: [
+                {
+                    messageId: "noSpaceBetween",
+                    type: AST_NODE_TYPES.TSArrayType,
+                },
+            ],
+            output: correctForAlways,
+        },
+        {
+            options: ["always"],
+            code: "const array: string  [];",
+            errors: [
+                {
+                    messageId: "oneSpace",
+                    type: AST_NODE_TYPES.TSArrayType,
+                },
+            ],
+            output: correctForAlways,
+        },
+    ],
 });

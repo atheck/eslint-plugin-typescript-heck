@@ -1,5 +1,5 @@
 import { ESLintUtils, TSESTree } from "@typescript-eslint/experimental-utils";
-import { RuleContext, RuleListener } from "@typescript-eslint/experimental-utils/dist/ts-eslint";
+import { ReportFixFunction, RuleContext, RuleFix, RuleFixer, RuleListener } from "@typescript-eslint/experimental-utils/dist/ts-eslint";
 import { JSONSchema4 } from "json-schema";
 
 export const ruleName = "array-type-spacing";
@@ -17,7 +17,7 @@ const defaultOptions: Options = ["never"];
 // eslint-disable-next-line new-cap
 const createRule = ESLintUtils.RuleCreator(name => `https://github.com/atheck/eslint-plugin-typescript-heck#${name}`);
 
-export type MessageIds = "removeSpace" | "addSpace";
+export type MessageIds = "noSpace" | "oneSpace" | "noSpaceBetween";
 
 const arrayTypeSpacing = createRule<Options, MessageIds>({
     name: ruleName,
@@ -29,8 +29,9 @@ const arrayTypeSpacing = createRule<Options, MessageIds>({
             description: "Enforces correct spacing between type and square brackets of array types.",
         },
         messages: {
-            removeSpace: "Remove whitespace between type name and square brackets.",
-            addSpace: "Put one space between type name and square brackets.",
+            noSpace: "There should be no whitespace between type name and square brackets.",
+            oneSpace: "There should exactly be one space between type name and square brackets.",
+            noSpaceBetween: "There should be no spaces between the square brackets.",
         },
         schema,
     },
@@ -42,28 +43,59 @@ const arrayTypeSpacing = createRule<Options, MessageIds>({
             TSArrayType (node: TSESTree.TSArrayType): void {
                 const code = context.getSourceCode().getText(node);
 
-                switch (config) {
-                    case "always":
-                        if (!(/[^\s] \[\]$/u).test(code)) {
-                            context.report({
-                                messageId: "addSpace",
-                                node,
-                            });
-                        }
-                        break;
+                const regex = /(?<before>\s*)\[(?<between>\s*)\]$/u;
+                const match = regex.exec(code);
 
-                    case "never":
-                        if (!(/[^\s]\[\]$/u).test(code)) {
-                            context.report({
-                                messageId: "removeSpace",
-                                node,
-                            });
-                        }
-                        break;
+                if (match) {
+                    const typeName = code.slice(0, Math.max(0, match.index));
+                    const spacesBefore = match.groups?.before ?? "";
+                    const spacesBetween = match.groups?.between;
+
+                    switch (config) {
+                        case "always":
+                            if (spacesBefore !== " ") {
+                                context.report({
+                                    messageId: "oneSpace",
+                                    node,
+                                    fix: fixForAlways(node, typeName),
+                                });
+                            }
+                            break;
+
+                        case "never":
+                            if (spacesBefore !== "") {
+                                context.report({
+                                    messageId: "noSpace",
+                                    node,
+                                    fix: fixForNever(node, typeName),
+                                });
+                            }
+                            break;
+                    }
+
+                    if (spacesBetween !== "") {
+                        context.report({
+                            messageId: "noSpaceBetween",
+                            node,
+                            fix: fixSpaceBetween(node, typeName, spacesBefore),
+                        });
+                    }
                 }
             },
         };
     },
 });
+
+function fixSpaceBetween (node: TSESTree.Node, typeName: string, spacesBefore: string): ReportFixFunction {
+    return (fixer: RuleFixer): RuleFix => fixer.replaceText(node, `${typeName}${spacesBefore}[]`);
+}
+
+function fixForNever (node: TSESTree.Node, typeName: string): ReportFixFunction {
+    return (fixer: RuleFixer): RuleFix => fixer.replaceText(node, `${typeName}[]`);
+}
+
+function fixForAlways (node: TSESTree.Node, typeName: string): ReportFixFunction {
+    return (fixer: RuleFixer): RuleFix => fixer.replaceText(node, `${typeName} []`);
+}
 
 export { arrayTypeSpacing };
