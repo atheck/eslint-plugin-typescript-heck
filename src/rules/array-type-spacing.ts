@@ -5,14 +5,31 @@ import { JSONSchema4 } from "json-schema";
 export const ruleName = "array-type-spacing";
 
 type Config = "never" | "always";
-export type Options = [Config];
+interface AdvancedConfig {
+    betweenDimensions: Config,
+}
+export type Options = [Config, Partial<AdvancedConfig>?];
 
 const configOptionSchema: JSONSchema4 = {
     enum: ["never", "always"],
 };
-const schema: JSONSchema4 [] = [configOptionSchema];
+const advancedConfigSchema: JSONSchema4 = {
+    type: "object",
+    properties: {
+        multiArrays: {
+            type: "string",
+        },
+    },
+    additionalProperties: false,
+};
+const schema: JSONSchema4 [] = [configOptionSchema, advancedConfigSchema];
 
-const defaultOptions: Options = ["never"];
+const defaultOptions: Options = [
+    "never",
+    {
+        betweenDimensions: "never",
+    },
+];
 
 // eslint-disable-next-line new-cap
 const createRule = ESLintUtils.RuleCreator(name => `https://github.com/atheck/eslint-plugin-typescript-heck#${name}`);
@@ -37,7 +54,7 @@ const arrayTypeSpacing = createRule<Options, MessageIds>({
     },
     defaultOptions,
 
-    create (context: Readonly<RuleContext<MessageIds, Options>>, [config]: readonly [Config]): RuleListener {
+    create (context: Readonly<RuleContext<MessageIds, Options>>, [config, advancedConfig]: readonly [...Options]): RuleListener {
         return {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             TSArrayType (node: TSESTree.TSArrayType): void {
@@ -46,12 +63,16 @@ const arrayTypeSpacing = createRule<Options, MessageIds>({
                 const regex = /(?<before>\s*)\[(?<between>\s*)\]$/u;
                 const match = regex.exec(code);
 
+                const mode: Config = isMultidimensionalArray(node) ?
+                    advancedConfig?.betweenDimensions ?? "never" :
+                    config;
+
                 if (match) {
                     const typeName = code.slice(0, Math.max(0, match.index));
                     const spacesBefore = match.groups?.before ?? "";
                     const spacesBetween = match.groups?.between;
 
-                    switch (config) {
+                    switch (mode) {
                         case "always":
                             if (spacesBefore !== " ") {
                                 context.report({
@@ -85,6 +106,10 @@ const arrayTypeSpacing = createRule<Options, MessageIds>({
         };
     },
 });
+
+function isMultidimensionalArray (node: TSESTree.TSArrayType): boolean {
+    return node.elementType.type === TSESTree.AST_NODE_TYPES.TSArrayType;
+}
 
 function fixSpaceBetween (node: TSESTree.Node, typeName: string, spacesBefore: string): ReportFixFunction {
     return (fixer: RuleFixer): RuleFix => fixer.replaceText(node, `${typeName}${spacesBefore}[]`);

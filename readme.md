@@ -64,3 +64,56 @@ function myFunc (parameter: number []) {
     // ...
 }
 ~~~
+
+There is an optional configuration object:
+
+**betweenDimensions**:
+
+* "never" (default) enforces no space between consecutive square brackets.
+* "always" enforces exactly one space between consecutive square brackets.
+
+~~~json
+{
+    "betweenDimensions": "never"
+}
+~~~
+
+**betweenDimensions: "never":**
+
+👎 Examples of **incorrect** code for this rule:
+
+~~~ts
+const myVar: string[] [] = [];
+function myFunc (parameter: number[] []) {
+    // ...
+}
+~~~
+
+👍 Examples of **correct** code for this rule:
+
+~~~ts
+const myVar: string [][] = [];
+function myFunc (parameter: number [][]) {
+    // ...
+}
+~~~
+
+**betweenDimensions: "always":**
+
+👎 Examples of **incorrect** code for this rule:
+
+~~~ts
+const myVar: string[][] = [];
+function myFunc (parameter: number[][]) {
+    // ...
+}
+~~~
+
+👍 Examples of **correct** code for this rule:
+
+~~~ts
+const myVar: string [] [] = [];
+function myFunc (parameter: number [] []) {
+    // ...
+}
+~~~
