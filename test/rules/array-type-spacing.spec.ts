@@ -32,7 +32,7 @@ ruleTester.run(`${ruleName} with 'never'`, arrayTypeSpacing, {
             code: "const array: string[ ];",
             errors: [
                 {
-                    messageId: "noSpaceBetween",
+                    messageId: "noSpaceBetweenBrackets",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
             ],
@@ -47,7 +47,7 @@ ruleTester.run(`${ruleName} with 'never'`, arrayTypeSpacing, {
                     type: AST_NODE_TYPES.TSArrayType,
                 },
                 {
-                    messageId: "noSpaceBetween",
+                    messageId: "noSpaceBetweenBrackets",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
             ],
@@ -84,7 +84,7 @@ ruleTester.run(`${ruleName} with 'always'`, arrayTypeSpacing, {
                     type: AST_NODE_TYPES.TSArrayType,
                 },
                 {
-                    messageId: "noSpaceBetween",
+                    messageId: "noSpaceBetweenBrackets",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
             ],
@@ -95,7 +95,7 @@ ruleTester.run(`${ruleName} with 'always'`, arrayTypeSpacing, {
             code: "const array: string [ ];",
             errors: [
                 {
-                    messageId: "noSpaceBetween",
+                    messageId: "noSpaceBetweenBrackets",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
             ],
@@ -131,7 +131,7 @@ ruleTester.run(`${ruleName} with multidimensional array, options: ${JSON.stringi
             code: "const array: string [] [];",
             errors: [
                 {
-                    messageId: "noSpace",
+                    messageId: "noSpaceBetweenDimensions",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
                 {
@@ -146,11 +146,11 @@ ruleTester.run(`${ruleName} with multidimensional array, options: ${JSON.stringi
             code: "const array: string[ ][ ];",
             errors: [
                 {
-                    messageId: "noSpaceBetween",
+                    messageId: "noSpaceBetweenBrackets",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
                 {
-                    messageId: "noSpaceBetween",
+                    messageId: "noSpaceBetweenBrackets",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
             ],
@@ -165,7 +165,7 @@ ruleTester.run(`${ruleName} with multidimensional array, options: ${JSON.stringi
                     type: AST_NODE_TYPES.TSArrayType,
                 },
                 {
-                    messageId: "noSpaceBetween",
+                    messageId: "noSpaceBetweenBrackets",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
             ],
@@ -200,15 +200,15 @@ ruleTester.run(`${ruleName} with multidimensional array, options: ${JSON.stringi
             code: "const array: string[ ][ ];",
             errors: [
                 {
-                    messageId: "oneSpace",
+                    messageId: "oneSpaceBetweenDimensions",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
                 {
-                    messageId: "noSpaceBetween",
+                    messageId: "noSpaceBetweenBrackets",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
                 {
-                    messageId: "noSpaceBetween",
+                    messageId: "noSpaceBetweenBrackets",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
             ],
@@ -219,7 +219,7 @@ ruleTester.run(`${ruleName} with multidimensional array, options: ${JSON.stringi
             code: "const array: string [ ][];",
             errors: [
                 {
-                    messageId: "oneSpace",
+                    messageId: "oneSpaceBetweenDimensions",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
                 {
@@ -227,7 +227,7 @@ ruleTester.run(`${ruleName} with multidimensional array, options: ${JSON.stringi
                     type: AST_NODE_TYPES.TSArrayType,
                 },
                 {
-                    messageId: "noSpaceBetween",
+                    messageId: "noSpaceBetweenBrackets",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
             ],
@@ -251,7 +251,7 @@ ruleTester.run(`${ruleName} with multidimensional array, options: ${JSON.stringi
             code: "const array: string [] [];",
             errors: [
                 {
-                    messageId: "noSpace",
+                    messageId: "noSpaceBetweenDimensions",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
             ],
@@ -262,7 +262,7 @@ ruleTester.run(`${ruleName} with multidimensional array, options: ${JSON.stringi
             code: "const array: string[ ][ ];",
             errors: [
                 {
-                    messageId: "noSpaceBetween",
+                    messageId: "noSpaceBetweenBrackets",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
                 {
@@ -270,7 +270,7 @@ ruleTester.run(`${ruleName} with multidimensional array, options: ${JSON.stringi
                     type: AST_NODE_TYPES.TSArrayType,
                 },
                 {
-                    messageId: "noSpaceBetween",
+                    messageId: "noSpaceBetweenBrackets",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
             ],
@@ -281,7 +281,7 @@ ruleTester.run(`${ruleName} with multidimensional array, options: ${JSON.stringi
             code: "const array: string [ ][];",
             errors: [
                 {
-                    messageId: "noSpaceBetween",
+                    messageId: "noSpaceBetweenBrackets",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
             ],
@@ -305,7 +305,7 @@ ruleTester.run(`${ruleName} with multidimensional array, options: ${JSON.stringi
             code: "const array: string[][];",
             errors: [
                 {
-                    messageId: "oneSpace",
+                    messageId: "oneSpaceBetweenDimensions",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
                 {
@@ -320,19 +320,19 @@ ruleTester.run(`${ruleName} with multidimensional array, options: ${JSON.stringi
             code: "const array: string[ ][ ];",
             errors: [
                 {
+                    messageId: "oneSpaceBetweenDimensions",
+                    type: AST_NODE_TYPES.TSArrayType,
+                },
+                {
+                    messageId: "noSpaceBetweenBrackets",
+                    type: AST_NODE_TYPES.TSArrayType,
+                },
+                {
                     messageId: "oneSpace",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
                 {
-                    messageId: "noSpaceBetween",
-                    type: AST_NODE_TYPES.TSArrayType,
-                },
-                {
-                    messageId: "oneSpace",
-                    type: AST_NODE_TYPES.TSArrayType,
-                },
-                {
-                    messageId: "noSpaceBetween",
+                    messageId: "noSpaceBetweenBrackets",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
             ],
@@ -343,11 +343,11 @@ ruleTester.run(`${ruleName} with multidimensional array, options: ${JSON.stringi
             code: "const array: string [ ][];",
             errors: [
                 {
-                    messageId: "oneSpace",
+                    messageId: "oneSpaceBetweenDimensions",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
                 {
-                    messageId: "noSpaceBetween",
+                    messageId: "noSpaceBetweenBrackets",
                     type: AST_NODE_TYPES.TSArrayType,
                 },
             ],

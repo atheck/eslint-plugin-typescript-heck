@@ -34,7 +34,7 @@ const defaultOptions: Options = [
 // eslint-disable-next-line new-cap
 const createRule = ESLintUtils.RuleCreator(name => `https://github.com/atheck/eslint-plugin-typescript-heck#${name}`);
 
-export type MessageIds = "noSpace" | "oneSpace" | "noSpaceBetween";
+export type MessageIds = "noSpace" | "oneSpace" | "noSpaceBetweenDimensions" | "oneSpaceBetweenDimensions" | "noSpaceBetweenBrackets";
 
 const arrayTypeSpacing = createRule<Options, MessageIds>({
     name: ruleName,
@@ -47,14 +47,16 @@ const arrayTypeSpacing = createRule<Options, MessageIds>({
         },
         messages: {
             noSpace: "There should be no whitespace between type name and square brackets.",
-            oneSpace: "There should exactly be one space between type name and square brackets.",
-            noSpaceBetween: "There should be no spaces between the square brackets.",
+            oneSpace: "There should be exactly one space between type name and square brackets.",
+            noSpaceBetweenDimensions: "There should be no whitespace between consecutive square brackets.",
+            oneSpaceBetweenDimensions: "There should be exactly one space between consecutive square brackets.",
+            noSpaceBetweenBrackets: "There should be no spaces between the square brackets.",
         },
         schema,
     },
     defaultOptions,
 
-    create (context: Readonly<RuleContext<MessageIds, Options>>, [config, advancedConfig]: readonly [...Options]): RuleListener {
+    create (context: Readonly<RuleContext<MessageIds, Options>>, [mode, advancedConfig]: readonly [...Options]): RuleListener {
         return {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             TSArrayType (node: TSESTree.TSArrayType): void {
@@ -63,40 +65,62 @@ const arrayTypeSpacing = createRule<Options, MessageIds>({
                 const regex = /(?<before>\s*)\[(?<between>\s*)\]$/u;
                 const match = regex.exec(code);
 
-                const mode: Config = isMultidimensionalArray(node) ?
-                    advancedConfig?.betweenDimensions ?? "never" :
-                    config;
-
                 if (match) {
                     const typeName = code.slice(0, Math.max(0, match.index));
                     const spacesBefore = match.groups?.before ?? "";
                     const spacesBetween = match.groups?.between;
 
-                    switch (mode) {
-                        case "always":
-                            if (spacesBefore !== " ") {
-                                context.report({
-                                    messageId: "oneSpace",
-                                    node,
-                                    fix: fixForAlways(node, typeName),
-                                });
-                            }
-                            break;
+                    if (isMultidimensionalArray(node)) {
+                        const dimensionsMode = advancedConfig?.betweenDimensions ?? "never";
 
-                        case "never":
-                            if (spacesBefore !== "") {
-                                context.report({
-                                    messageId: "noSpace",
-                                    node,
-                                    fix: fixForNever(node, typeName),
-                                });
-                            }
-                            break;
+                        switch (dimensionsMode) {
+                            case "always":
+                                if (spacesBefore !== " ") {
+                                    context.report({
+                                        messageId: "oneSpaceBetweenDimensions",
+                                        node,
+                                        fix: fixForAlways(node, typeName),
+                                    });
+                                }
+                                break;
+
+                            case "never":
+                                if (spacesBefore !== "") {
+                                    context.report({
+                                        messageId: "noSpaceBetweenDimensions",
+                                        node,
+                                        fix: fixForNever(node, typeName),
+                                    });
+                                }
+                                break;
+                        }
+                    } else {
+                        switch (mode) {
+                            case "always":
+                                if (spacesBefore !== " ") {
+                                    context.report({
+                                        messageId: "oneSpace",
+                                        node,
+                                        fix: fixForAlways(node, typeName),
+                                    });
+                                }
+                                break;
+
+                            case "never":
+                                if (spacesBefore !== "") {
+                                    context.report({
+                                        messageId: "noSpace",
+                                        node,
+                                        fix: fixForNever(node, typeName),
+                                    });
+                                }
+                                break;
+                        }
                     }
 
                     if (spacesBetween !== "") {
                         context.report({
-                            messageId: "noSpaceBetween",
+                            messageId: "noSpaceBetweenBrackets",
                             node,
                             fix: fixSpaceBetween(node, typeName, spacesBefore),
                         });
