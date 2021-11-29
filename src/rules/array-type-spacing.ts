@@ -16,7 +16,7 @@ const configOptionSchema: JSONSchema4 = {
 const advancedConfigSchema: JSONSchema4 = {
     type: "object",
     properties: {
-        multiArrays: {
+        betweenDimensions: {
             type: "string",
         },
     },
