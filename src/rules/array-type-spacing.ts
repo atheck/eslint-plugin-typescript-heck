@@ -1,5 +1,5 @@
 import { ESLintUtils, TSESTree } from "@typescript-eslint/experimental-utils";
-import { ReportFixFunction, RuleContext, RuleFix, RuleFixer, RuleListener } from "@typescript-eslint/experimental-utils/dist/ts-eslint";
+import { ReportFixFunction, RuleContext, RuleFix, RuleFixer, RuleListener } from "@typescript-eslint/utils/dist/ts-eslint";
 import { JSONSchema4 } from "json-schema";
 
 export const ruleName = "array-type-spacing";
