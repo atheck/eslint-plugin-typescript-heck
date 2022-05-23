@@ -2,13 +2,13 @@ import { ESLintUtils, TSESTree } from "@typescript-eslint/experimental-utils";
 import { ReportFixFunction, RuleContext, RuleFix, RuleFixer, RuleListener } from "@typescript-eslint/utils/dist/ts-eslint";
 import { JSONSchema4 } from "json-schema";
 
-export const ruleName = "array-type-spacing";
+const ruleName = "array-type-spacing";
 
 type Config = "never" | "always";
 interface AdvancedConfig {
     betweenDimensions: Config,
 }
-export type Options = [Config, Partial<AdvancedConfig>?];
+type Options = [Config, Partial<AdvancedConfig>?];
 
 const configOptionSchema: JSONSchema4 = {
     enum: ["never", "always"],
@@ -34,7 +34,7 @@ const defaultOptions: Options = [
 // eslint-disable-next-line new-cap
 const createRule = ESLintUtils.RuleCreator(name => `https://github.com/atheck/eslint-plugin-typescript-heck#${name}`);
 
-export type MessageIds = "noSpace" | "oneSpace" | "noSpaceBetweenDimensions" | "oneSpaceBetweenDimensions" | "noSpaceBetweenBrackets";
+type MessageIds = "noSpace" | "oneSpace" | "noSpaceBetweenDimensions" | "oneSpaceBetweenDimensions" | "noSpaceBetweenBrackets";
 
 const arrayTypeSpacing = createRule<Options, MessageIds>({
     name: ruleName,
@@ -147,4 +147,12 @@ function fixForAlways (node: TSESTree.Node, typeName: string): ReportFixFunction
     return (fixer: RuleFixer): RuleFix => fixer.replaceText(node, `${typeName} []`);
 }
 
-export { arrayTypeSpacing };
+export type {
+    Options,
+    MessageIds,
+};
+
+export {
+    ruleName,
+    arrayTypeSpacing,
+};

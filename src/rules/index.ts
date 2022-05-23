@@ -1,5 +1,9 @@
 import { ruleName as arraySpacingName, arrayTypeSpacing } from "./array-type-spacing";
 
-export const rules = {
+const rules = {
     [arraySpacingName]: arrayTypeSpacing,
+};
+
+export {
+    rules,
 };
