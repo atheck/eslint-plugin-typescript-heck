@@ -7,6 +7,7 @@ This package includes extended eslint rules for usage with Typescript.
 | Name | Description |
 | ---  | ---         |
 | [array-type-spacing](#array-type-spacing) | Enforces correct spacing between type name and square brackets of array types. |
+| [type-parameter-spacing](#type-parameter-spacing) | Enforces correct spacing between an identifier and type parameters. |
 
 ### array-type-spacing
 
@@ -115,5 +116,74 @@ function myFunc (parameter: number[][]) {
 const myVar: string [] [] = [];
 function myFunc (parameter: number [] []) {
     // ...
+}
+~~~
+
+### type-parameter-spacing
+
+This rule enforces correct spacing between an identifier and type parameters. This works for functions, function declarations, interfaces, type aliases, and classes.
+
+🔧 The `--fix` option on the command line can automatically fix the problems reported by this rule.
+
+#### Options
+
+This rule takes one option:
+
+* "never" (default) enforces no space between identifier and type parameters.
+* "always" enforces exactly one space between identifier and type parameters.
+
+~~~json
+"type-parameter-spacing": ["warn", "never"]
+~~~
+
+**never:**
+
+👎 Examples of **incorrect** code for this rule:
+
+~~~ts
+function generic <TType> (parameter: TType) {
+    // ...
+}
+
+interface Generic <TType> {
+    value: TType,
+}
+~~~
+
+👍 Examples of **correct** code for this rule:
+
+~~~ts
+function generic<TType> (parameter: TType) {
+    // ...
+}
+
+interface Generic<TType> {
+    value: TType,
+}
+~~~
+
+**always:**
+
+👎 Examples of **incorrect** code for this rule:
+
+~~~ts
+function generic<TType> (parameter: TType) {
+    // ...
+}
+
+interface Generic<TType> {
+    value: TType,
+}
+~~~
+
+👍 Examples of **correct** code for this rule:
+
+~~~ts
+function generic <TType> (parameter: TType) {
+    // ...
+}
+
+interface Generic <TType> {
+    value: TType,
 }
 ~~~
