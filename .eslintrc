@@ -1,5 +1,5 @@
 {
-    "extends": "heck/node",
+    "extends": ["heck/node", "heck/complexity", "heck/groupImports"],
     "rules": {
         "jest/require-hook": "off",
         "unicorn/filename-case": "off"

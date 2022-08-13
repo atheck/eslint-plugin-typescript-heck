@@ -10,6 +10,7 @@
     "update": "npx npm-check-updates -i",
     "lint": "eslint --ext .ts src/",
     "test": "jest --coverage",
+    "test:watch": "jest --coverage --watch",
     "semantic-release": "semantic-release"
   },
   "author": "atheck",

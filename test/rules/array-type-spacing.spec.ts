@@ -1,5 +1,5 @@
-import { arrayTypeSpacing, Options, ruleName } from "../../src/rules/array-type-spacing";
 import { AST_NODE_TYPES, ESLintUtils } from "@typescript-eslint/experimental-utils";
+import { arrayTypeSpacing, Options, ruleName } from "../../src/rules/array-type-spacing";
 
 const ruleTester = new ESLintUtils.RuleTester({
     parser: "@typescript-eslint/parser",

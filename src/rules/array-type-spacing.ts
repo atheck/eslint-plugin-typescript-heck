@@ -31,6 +31,8 @@ const defaultOptions: Options = [
     },
 ];
 
+const arrayTypeSpacingRegex = /(?<before>\s*)\[(?<between>\s*)\]$/u;
+
 // eslint-disable-next-line new-cap
 const createRule = ESLintUtils.RuleCreator(name => `https://github.com/atheck/eslint-plugin-typescript-heck#${name}`);
 
@@ -61,81 +63,93 @@ const arrayTypeSpacing = createRule<Options, MessageIds>({
             // eslint-disable-next-line @typescript-eslint/naming-convention
             TSArrayType (node: TSESTree.TSArrayType): void {
                 const code = context.getSourceCode().getText(node);
+                const match = arrayTypeSpacingRegex.exec(code);
 
-                const regex = /(?<before>\s*)\[(?<between>\s*)\]$/u;
-                const match = regex.exec(code);
+                if (!match) {
+                    return;
+                }
 
-                if (match) {
-                    const typeName = code.slice(0, Math.max(0, match.index));
-                    const spacesBefore = match.groups?.before ?? "";
-                    const spacesBetween = match.groups?.between;
+                const typeName = code.slice(0, Math.max(0, match.index));
+                const spacesBetween = match.groups?.between;
 
-                    if (isMultidimensionalArray(node)) {
-                        const dimensionsMode = advancedConfig?.betweenDimensions ?? "never";
+                if (isMultidimensionalArray(node)) {
+                    handleMultidimensionalArray(advancedConfig, { match, context, node, typeName });
+                } else {
+                    handleArray(mode, { match, context, node, typeName });
+                }
 
-                        switch (dimensionsMode) {
-                            case "always":
-                                if (spacesBefore !== " ") {
-                                    context.report({
-                                        messageId: "oneSpaceBetweenDimensions",
-                                        node,
-                                        fix: fixForAlways(node, typeName),
-                                    });
-                                }
-                                break;
-
-                            case "never":
-                                if (spacesBefore !== "") {
-                                    context.report({
-                                        messageId: "noSpaceBetweenDimensions",
-                                        node,
-                                        fix: fixForNever(node, typeName),
-                                    });
-                                }
-                                break;
-                        }
-                    } else {
-                        switch (mode) {
-                            case "always":
-                                if (spacesBefore !== " ") {
-                                    context.report({
-                                        messageId: "oneSpace",
-                                        node,
-                                        fix: fixForAlways(node, typeName),
-                                    });
-                                }
-                                break;
-
-                            case "never":
-                                if (spacesBefore !== "") {
-                                    context.report({
-                                        messageId: "noSpace",
-                                        node,
-                                        fix: fixForNever(node, typeName),
-                                    });
-                                }
-                                break;
-                        }
-                    }
-
-                    if (spacesBetween !== "") {
-                        context.report({
-                            messageId: "noSpaceBetweenBrackets",
-                            node,
-                            fix: fixSpaceBetween(node, typeName, spacesBefore),
-                        });
-                    }
+                if (spacesBetween !== "") {
+                    context.report({
+                        messageId: "noSpaceBetweenBrackets",
+                        node,
+                        fix: fixSpaceBetween({ match, node, typeName }),
+                    });
                 }
             },
         };
     },
 });
 
+function handleArray (mode: string, { match, context, node, typeName }: { match: RegExpExecArray, context: Readonly<RuleContext<MessageIds, Options>>, node: TSESTree.TSArrayType, typeName: string }): void {
+    const spacesBefore = match.groups?.before ?? "";
+
+    switch (mode) {
+        case "always":
+            if (spacesBefore !== " ") {
+                context.report({
+                    messageId: "oneSpace",
+                    node,
+                    fix: fixForAlways(node, typeName),
+                });
+            }
+            break;
+
+        case "never":
+            if (spacesBefore !== "") {
+                context.report({
+                    messageId: "noSpace",
+                    node,
+                    fix: fixForNever(node, typeName),
+                });
+            }
+            break;
+    }
+}
+
+function handleMultidimensionalArray (advancedConfig: Partial<AdvancedConfig> | undefined, { match, context, node, typeName }: { match: RegExpExecArray, context: Readonly<RuleContext<MessageIds, Options>>, node: TSESTree.TSArrayType, typeName: string }): void {
+    const spacesBefore = match.groups?.before ?? "";
+    const dimensionsMode = advancedConfig?.betweenDimensions ?? "never";
+
+    switch (dimensionsMode) {
+        case "always":
+            if (spacesBefore !== " ") {
+                context.report({
+                    messageId: "oneSpaceBetweenDimensions",
+                    node,
+                    fix: fixForAlways(node, typeName),
+                });
+            }
+            break;
+
+        case "never":
+            if (spacesBefore !== "") {
+                context.report({
+                    messageId: "noSpaceBetweenDimensions",
+                    node,
+                    fix: fixForNever(node, typeName),
+                });
+            }
+            break;
+    }
+}
+
 function isMultidimensionalArray (node: TSESTree.TSArrayType): boolean {
     return node.elementType.type === TSESTree.AST_NODE_TYPES.TSArrayType;
 }
 
-function fixSpaceBetween (node: TSESTree.Node, typeName: string, spacesBefore: string): ReportFixFunction {
+function fixSpaceBetween ({ match, node, typeName }: { match: RegExpExecArray, node: TSESTree.Node, typeName: string }): ReportFixFunction {
+    const spacesBefore = match.groups?.before ?? "";
+
     return (fixer: RuleFixer): RuleFix => fixer.replaceText(node, `${typeName}${spacesBefore}[]`);
 }
 
