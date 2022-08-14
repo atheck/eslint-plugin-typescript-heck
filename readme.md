@@ -121,7 +121,7 @@ function myFunc (parameter: number [] []) {
 
 ### type-parameter-spacing
 
-This rule enforces correct spacing between an identifier and type parameters. This works for functions, function declarations, interfaces, type aliases, and classes.
+This rule enforces correct spacing between an identifier and type parameters.
 
 🔧 The `--fix` option on the command line can automatically fix the problems reported by this rule.
 
@@ -148,6 +148,8 @@ function generic <TType> (parameter: TType) {
 interface Generic <TType> {
     value: TType,
 }
+
+const value: GenericType <number>;
 ~~~
 
 👍 Examples of **correct** code for this rule:
@@ -160,6 +162,8 @@ function generic<TType> (parameter: TType) {
 interface Generic<TType> {
     value: TType,
 }
+
+const value: GenericType<number>;
 ~~~
 
 **always:**
@@ -174,6 +178,8 @@ function generic<TType> (parameter: TType) {
 interface Generic<TType> {
     value: TType,
 }
+
+const value: GenericType<number>;
 ~~~
 
 👍 Examples of **correct** code for this rule:
@@ -186,4 +192,6 @@ function generic <TType> (parameter: TType) {
 interface Generic <TType> {
     value: TType,
 }
+
+const value: GenericType <number>;
 ~~~

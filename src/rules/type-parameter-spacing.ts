@@ -44,40 +44,44 @@ const typeParameterSpacing = createRule<Options, MessageIds>({
         return {
             /* eslint-disable @typescript-eslint/naming-convention */
             FunctionDeclaration (node: TSESTree.FunctionDeclaration) {
-                handleNode(node, context, mode);
+                handleNode({ identifierNode: node.id, typeParametersNode: node.typeParameters }, context, mode);
             },
             TSDeclareFunction (node: TSESTree.TSDeclareFunction) {
-                handleNode(node, context, mode);
+                handleNode({ identifierNode: node.id, typeParametersNode: node.typeParameters }, context, mode);
             },
             TSInterfaceDeclaration (node: TSESTree.TSInterfaceDeclaration) {
-                handleNode(node, context, mode);
+                handleNode({ identifierNode: node.id, typeParametersNode: node.typeParameters }, context, mode);
             },
             TSTypeAliasDeclaration (node: TSESTree.TSTypeAliasDeclaration) {
-                handleNode(node, context, mode);
+                handleNode({ identifierNode: node.id, typeParametersNode: node.typeParameters }, context, mode);
             },
             ClassDeclaration (node: TSESTree.ClassDeclaration) {
-                handleNode(node, context, mode);
+                handleNode({ identifierNode: node.id, typeParametersNode: node.typeParameters }, context, mode);
+                handleNode({ identifierNode: node.superClass, typeParametersNode: node.superTypeParameters }, context, mode);
+            },
+            TSTypeReference (node: TSESTree.TSTypeReference) {
+                handleNode({ identifierNode: node.typeName, typeParametersNode: node.typeParameters }, context, mode);
             },
             /* eslint-enable @typescript-eslint/naming-convention */
         };
     },
 });
 
-function handleNode<TNode extends TSESTree.Node> (node: TNode & { id: TSESTree.Identifier | null, typeParameters?: TSESTree.TSTypeParameterDeclaration }, context: Readonly<RuleContext<MessageIds, Options>>, mode: Config): void {
-    if (!node.id || !node.typeParameters) {
+function handleNode ({ identifierNode, typeParametersNode }: { identifierNode: TSESTree.Node | null, typeParametersNode: TSESTree.Node | undefined }, context: Readonly<RuleContext<MessageIds, Options>>, mode: Config): void {
+    if (!identifierNode || !typeParametersNode) {
         return;
     }
 
-    const identifierEndIndex = node.id.range[1];
-    const typeParametersStartIndex = node.typeParameters.range[0];
+    const identifierEndIndex = identifierNode.range[1];
+    const typeParametersStartIndex = typeParametersNode.range[0];
 
     switch (mode) {
         case "always":
             if (identifierEndIndex === typeParametersStartIndex) {
                 context.report({
                     messageId: "oneSpace",
-                    node,
-                    fix: fixForAlways(node.id),
+                    node: typeParametersNode,
+                    fix: fixForAlways(identifierNode),
                 });
             }
             break;
@@ -86,19 +90,19 @@ function handleNode<TNode extends TSESTree.Node> (node: TNode & { id: TSESTree.I
             if (identifierEndIndex < typeParametersStartIndex) {
                 context.report({
                     messageId: "noSpace",
-                    node,
-                    fix: fixForNever(node.id, node.typeParameters),
+                    node: typeParametersNode,
+                    fix: fixForNever(identifierNode, typeParametersNode),
                 });
             }
             break;
     }
 }
 
-function fixForNever (identifier: TSESTree.Identifier, typeParameters: TSESTree.TSTypeParameterDeclaration): ReportFixFunction {
+function fixForNever (identifier: TSESTree.Node, typeParameters: TSESTree.Node): ReportFixFunction {
     return (fixer: RuleFixer): RuleFix => fixer.removeRange([identifier.range[1], typeParameters.range[0]]);
 }
 
-function fixForAlways (node: TSESTree.Identifier): ReportFixFunction {
+function fixForAlways (node: TSESTree.Node): ReportFixFunction {
     return (fixer: RuleFixer): RuleFix => fixer.insertTextAfter(node, " ");
 }
 

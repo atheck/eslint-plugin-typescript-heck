@@ -19,7 +19,7 @@ ruleTester.run(`${ruleName} for function declaration with mode 'never'`, typePar
             errors: [
                 {
                     messageId: "noSpace",
-                    type: AST_NODE_TYPES.FunctionDeclaration,
+                    type: AST_NODE_TYPES.TSTypeParameterDeclaration,
                 },
             ],
             output: "function generic<TType> () {}",
@@ -41,7 +41,7 @@ ruleTester.run(`${ruleName} for function declaration with mode 'always'`, typePa
             errors: [
                 {
                     messageId: "oneSpace",
-                    type: AST_NODE_TYPES.FunctionDeclaration,
+                    type: AST_NODE_TYPES.TSTypeParameterDeclaration,
                 },
             ],
             output: "function generic <TType> () {}",
@@ -63,7 +63,7 @@ ruleTester.run(`${ruleName} for declare function with mode 'never'`, typeParamet
             errors: [
                 {
                     messageId: "noSpace",
-                    type: AST_NODE_TYPES.TSDeclareFunction,
+                    type: AST_NODE_TYPES.TSTypeParameterDeclaration,
                 },
             ],
             output: "declare function generic<TType> (): void;",
@@ -85,7 +85,7 @@ ruleTester.run(`${ruleName} for declare function with mode 'always'`, typeParame
             errors: [
                 {
                     messageId: "oneSpace",
-                    type: AST_NODE_TYPES.TSDeclareFunction,
+                    type: AST_NODE_TYPES.TSTypeParameterDeclaration,
                 },
             ],
             output: "declare function generic <TType> (): void;",
@@ -107,7 +107,7 @@ ruleTester.run(`${ruleName} for interface with mode 'never'`, typeParameterSpaci
             errors: [
                 {
                     messageId: "noSpace",
-                    type: AST_NODE_TYPES.TSInterfaceDeclaration,
+                    type: AST_NODE_TYPES.TSTypeParameterDeclaration,
                 },
             ],
             output: "interface Generic<TType> {}",
@@ -129,7 +129,7 @@ ruleTester.run(`${ruleName} for interface with mode 'always'`, typeParameterSpac
             errors: [
                 {
                     messageId: "oneSpace",
-                    type: AST_NODE_TYPES.TSInterfaceDeclaration,
+                    type: AST_NODE_TYPES.TSTypeParameterDeclaration,
                 },
             ],
             output: "interface Generic <TType> {}",
@@ -151,7 +151,7 @@ ruleTester.run(`${ruleName} for type with mode 'never'`, typeParameterSpacing, {
             errors: [
                 {
                     messageId: "noSpace",
-                    type: AST_NODE_TYPES.TSTypeAliasDeclaration,
+                    type: AST_NODE_TYPES.TSTypeParameterDeclaration,
                 },
             ],
             output: "type Generic<TType> = {};",
@@ -173,7 +173,7 @@ ruleTester.run(`${ruleName} for type with mode 'always'`, typeParameterSpacing, 
             errors: [
                 {
                     messageId: "oneSpace",
-                    type: AST_NODE_TYPES.TSTypeAliasDeclaration,
+                    type: AST_NODE_TYPES.TSTypeParameterDeclaration,
                 },
             ],
             output: "type Generic <TType> = {};",
@@ -195,7 +195,7 @@ ruleTester.run(`${ruleName} for class with mode 'never'`, typeParameterSpacing, 
             errors: [
                 {
                     messageId: "noSpace",
-                    type: AST_NODE_TYPES.ClassDeclaration,
+                    type: AST_NODE_TYPES.TSTypeParameterDeclaration,
                 },
             ],
             output: "class Generic<TType> {};",
@@ -217,10 +217,158 @@ ruleTester.run(`${ruleName} for class with mode 'always'`, typeParameterSpacing,
             errors: [
                 {
                     messageId: "oneSpace",
-                    type: AST_NODE_TYPES.ClassDeclaration,
+                    type: AST_NODE_TYPES.TSTypeParameterDeclaration,
                 },
             ],
             output: "class Generic <TType> {};",
+        },
+    ],
+});
+
+ruleTester.run(`${ruleName} for type references with mode 'never'`, typeParameterSpacing, {
+    valid: [
+        {
+            options: ["never"],
+            code: "function test (): GenericType<number> {}",
+        },
+        {
+            options: ["never"],
+            code: "type Alias = GenericType<number>;",
+        },
+        {
+            options: ["never"],
+            code: "const value: GenericType<number>;",
+        },
+    ],
+    invalid: [
+        {
+            options: ["never"],
+            code: "function test (): GenericType <number> {}",
+            errors: [
+                {
+                    messageId: "noSpace",
+                    type: AST_NODE_TYPES.TSTypeParameterInstantiation,
+                },
+            ],
+            output: "function test (): GenericType<number> {}",
+        },
+        {
+            options: ["never"],
+            code: "type Alias = GenericType <number>;",
+            errors: [
+                {
+                    messageId: "noSpace",
+                    type: AST_NODE_TYPES.TSTypeParameterInstantiation,
+                },
+            ],
+            output: "type Alias = GenericType<number>;",
+        },
+        {
+            options: ["never"],
+            code: "const value: GenericType <number>;",
+            errors: [
+                {
+                    messageId: "noSpace",
+                    type: AST_NODE_TYPES.TSTypeParameterInstantiation,
+                },
+            ],
+            output: "const value: GenericType<number>;",
+        },
+    ],
+});
+
+ruleTester.run(`${ruleName} for type references with mode 'always'`, typeParameterSpacing, {
+    valid: [
+        {
+            options: ["always"],
+            code: "function test (): GenericType <number> {}",
+        },
+        {
+            options: ["always"],
+            code: "type Alias = GenericType <number>;",
+        },
+        {
+            options: ["always"],
+            code: "const value: GenericType <number>;",
+        },
+    ],
+    invalid: [
+        {
+            options: ["always"],
+            code: "function test (): GenericType<number> {}",
+            errors: [
+                {
+                    messageId: "oneSpace",
+                    type: AST_NODE_TYPES.TSTypeParameterInstantiation,
+                },
+            ],
+            output: "function test (): GenericType <number> {}",
+        },
+        {
+            options: ["always"],
+            code: "type Alias = GenericType<number>;",
+            errors: [
+                {
+                    messageId: "oneSpace",
+                    type: AST_NODE_TYPES.TSTypeParameterInstantiation,
+                },
+            ],
+            output: "type Alias = GenericType <number>;",
+        },
+        {
+            options: ["always"],
+            code: "const value: GenericType<number>;",
+            errors: [
+                {
+                    messageId: "oneSpace",
+                    type: AST_NODE_TYPES.TSTypeParameterInstantiation,
+                },
+            ],
+            output: "const value: GenericType <number>;",
+        },
+    ],
+});
+
+ruleTester.run(`${ruleName} for super class with mode 'never'`, typeParameterSpacing, {
+    valid: [
+        {
+            options: ["never"],
+            code: "class Extends extends SuperClass<number> {};",
+        },
+    ],
+    invalid: [
+        {
+            options: ["never"],
+            code: "class Extends extends SuperClass <number> {};",
+            errors: [
+                {
+                    messageId: "noSpace",
+                    type: AST_NODE_TYPES.TSTypeParameterInstantiation,
+                },
+            ],
+            output: "class Extends extends SuperClass<number> {};",
+        },
+    ],
+});
+
+ruleTester.run(`${ruleName} for super class with mode 'always'`, typeParameterSpacing, {
+    valid: [
+        {
+            options: ["always"],
+            code: "class Extends extends SuperClass <number> {};",
+        },
+    ],
+    invalid: [
+        {
+            options: ["always"],
+            code: "class Extends extends SuperClass<number> {};",
+            errors: [
+                {
+                    messageId: "oneSpace",
+                    type: AST_NODE_TYPES.TSTypeParameterInstantiation,
+                },
+            ],
+            output: "class Extends extends SuperClass <number> {};",
         },
     ],
 });
